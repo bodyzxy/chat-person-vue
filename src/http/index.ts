@@ -4,8 +4,7 @@ import router from "@/router/router";
 
 const service = axios.create({
     baseURL:BASE_URL,
-    withCredentials: false,
-    headers:HEADER
+    withCredentials: false
 });
 
 //请求
@@ -13,7 +12,7 @@ export const request = {
     get(url: string, params?: any){
         return service.get(url,{params})
     },
-    post(url:string, data?: any){
+    post(url: string, data?: any, p0?: { headers: { 'Content-Type': string; }; }){
         return service.post(url,data)
     },
     put(url: string, data?: any) {
@@ -27,6 +26,10 @@ export const request = {
 //拦截器
 service.interceptors.request.use(
     (config) => {
+        // 如果请求的数据是 FormData 类型，不设置 Content-Type，让浏览器自动处理
+        if (!(config.data instanceof FormData)) {
+            config.headers['Content-Type'] = 'application/json;charset=UTF-8';
+        }
         const token = localStorage.getItem("token");
         if(token != null){
             config.headers.Authorization = "Bearer " + token;

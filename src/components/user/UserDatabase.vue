@@ -27,12 +27,14 @@
             maxRows: 3
         }" type="textarea">
             <template #prefix>
-                <span class="icon-wrapper" @click="submitDatabse()">
+                <span class="icon-wrapper" @click="submitDatabse">
                     <n-icon :component="Unlink" size="30px" />
                 </span>
+                <!-- 隐藏的文件输入框 -->
+                <input type="file" ref="fileInput" style="display: none" @change="handleFileChange" />
             </template>
             <template #suffix>
-                <span class="icon-wrapper" @click="request()">
+                <span class="icon-wrapper" @click="submit()">
                     <n-icon :component="PaperPlaneOutline" size="30px" />
                 </span>
             </template>
@@ -45,13 +47,8 @@ import {
     PaperPlaneOutline,
     Unlink
 } from '@vicons/ionicons5';
+import {submitDatabse,submit,handleFileChange,fileInput} from '../../api/userDatabase/userFiles';
 
-function submitDatabse() {
-    console.log("上传文件");
-}
-function request() {
-    console.log("发送信息");
-}
 </script>
 
 <style>
