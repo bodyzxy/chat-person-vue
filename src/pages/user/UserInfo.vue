@@ -27,14 +27,14 @@
                     <!--TODO 使用for循环遍历显示-->
                     <n-list hoverable clickable class="list">
                         <n-scrollbar style="max-height: 100%;">
-                            <n-list-item v-for="(task, index) in dataBase">
+                            <n-list-item v-for="(task, index) in database">
                                 <!--TODO: 这里需要将params改为id-->
-                                <RouterLink :to="{name:'taskDetails', params: {id:task.title}}" style="text-decoration: none;">
-                                    <n-thing :title="task.title" content-type="margin-top: 10px">
+                                <RouterLink :to="{name:'taskDetails', params: {id:task.name}}" style="text-decoration: none;">
+                                    <n-thing :title="task.name" content-type="margin-top: 10px">
                                         <template #description>
                                             <n-space size="small" style="margin-top: 4px;">
                                                 <n-tag :bordered="false" type="info" size="small">
-                                                    {{ task.time }}
+                                                    {{ task.name }}
                                                 </n-tag>
                                             </n-space>
                                         </template>
@@ -51,9 +51,24 @@
 </template>
 
 <script setup lang="ts" name="UserInfo">
-    import { RouterLink,RouterView } from 'vue-router';
-    import {dataBase} from '../../api/user/userInfoData';
-    import {logout} from '../../api/user/logout';
+import { RouterLink} from 'vue-router';
+import {logout} from '../../api/user/logout';
+import { onMounted, Ref, ref } from 'vue';
+
+
+
+const database = ref<DatabaseInfo[]>([]);
+
+onMounted(async () => {
+    if (indexedDB.databases) {
+        const dbInfoList = await indexedDB.databases();
+        database.value = dbInfoList.map(db => ({
+            name: db.name,
+            version: db.version,
+            content: db.name // 示例内容
+        }));
+    }
+})
 </script>
 
 <style>
@@ -64,7 +79,7 @@
     margin: 10px;
     background-color: #fff; /* 可选：设置背景色 */
     border-radius: 8px; /* 可选：设置圆角 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);; /* 添加阴影效果 */
     opacity: 0.9;
 }
 .userLayout{

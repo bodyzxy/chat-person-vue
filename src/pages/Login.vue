@@ -1,6 +1,7 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
     <div class="card">
-        <n-card style="height: 100%;">
+        <n-card style="height: 100%; border-radius: 20px;">
             <n-tabs type="line" size="small" :tabs-padding="20" pane-style="padding: 20px;">
                 <n-tab-pane name="登录">
                     <n-input type="text" size="large" placeholder="昵称" style="width: 300px;" class="loginName" v-model:value="user.username">
@@ -31,7 +32,7 @@
                     </div>
                 </n-tab-pane>
                 <n-tab-pane name="注册">
-                    <n-input v-model:value="registerUser.username" type="text" size="large" placeholder="昵称" style="width: 300px;">
+                    <n-input v-model:value="registerUser.username" type="text" size="large" placeholder="昵称" style="width: 300px; border-radius: 20px;">
 
                     </n-input>
                     <n-input v-model:value="registerUser.email" type="text" size="large" placeholder="邮箱" style="width: 300px;" class="email">
@@ -109,12 +110,15 @@ const registerUser = ref<register>({
 }
 .password{
     top: 40px;
+    border-radius: 20px;
 }
 .loginName{
     top: 20px;
+    border-radius: 20px;
 }
 .email{
     top: 20px;
+    border-radius: 20px;
 }
 .signIn{
     top: 60px;
@@ -130,6 +134,7 @@ const registerUser = ref<register>({
 }
 .confirmPassword{
     margin-top: 60px;
+    border-radius: 20px;
 }
 .signUp{
     margin-top: 10px;

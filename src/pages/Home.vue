@@ -1,13 +1,17 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <n-space vertical>
     <n-layout>
       <n-layout has-sider>
         <n-layout-sider bordered show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
           :native-scrollbar="false" :inverted="inverted" :style="{height: siderHeight}">
-          <n-menu :inverted="inverted" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" />
+          <n-menu :inverted="inverted" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
+          @click="handleMenuSelect" />
         </n-layout-sider>
+        <!-- TODO:视屏展示 -->
         <n-layout class="windows">
         </n-layout>
+        <!-- 对话框的展示 -->
         <n-layout-content class="chatWindows">
           <div class="chatContent" ref="chatBox">
             <!--对话的显示需要定义数据类型，这里要使用v-for进行循环遍历-->
@@ -35,7 +39,7 @@
               </span>
             </template>
             <template #suffix>
-              <span class="icon-wrapper" @click="sendMessage()">
+              <span class="icon-wrapper" @click="sendMessage(activeKey,user_info,use_message)" :disabled="isSending">
                 <n-icon :component="PaperPlaneOutline" size="20px" />
               </span>
             </template>
@@ -47,20 +51,42 @@
 </template>
 
 <script setup lang="ts" name="Home">
-import { h,  ref, type Component, onMounted} from 'vue';
+import { h,  onMounted,  ref, type Component,} from 'vue';
 import { NIcon} from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
-import {messages,inputMessage,sendMessage
+import {messages,inputMessage,sendMessage,isSending
 } from '../api/user/home';
 import {
   BookOutline as BookIcon,
   PaperPlaneOutline,
   Unlink
 } from '@vicons/ionicons5';
+import { cursorGetData, deleteData, openDB } from '../api/db/indexedDB';
+import useMsgStore from '../store/msg';
+import userInfo from '../store/user';
 
 const inverted = ref(false);
 const siderHeight = ref('95vh');
-const info = ref("");
+const activeKey = ref<string>(''); // 用于保存当前选中的菜单项 key
+const use_message = useMsgStore();
+const user_info = userInfo();
+
+// 监听菜单项的选择，更新 activeKey
+function handleMenuSelect(key: string) {
+  activeKey.value = key.srcElement.innerText; //获取文本
+  console.log("sdasdasdasdas",messages.value)
+  messages.value = [];
+  use_message.messages = [];
+  if(activeKey.value != ''){
+    openDB(activeKey.value, 1, activeKey.value, "id", ['sender', 'content']).then((db) => {
+      //打开数据库成功
+				console.log("准备查询", db);
+        cursorGetData(db, activeKey.value,use_message)
+        messages.value = use_message.getMessages;
+    })
+  }
+  console.log(activeKey.value)
+}
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
@@ -142,10 +168,16 @@ const menuOptions: MenuOption[] = [
   }
 ]
 
-//页面整体颜色
 onMounted(() => {
-  document.querySelector("body")?.setAttribute("style", "background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)");
-});
+  // if(activeKey.value != ''){
+  //   openDB(activeKey.value, 1, activeKey.value, "id", ['sender', 'content']).then((db) => {
+  //     //打开数据库成功
+	// 			console.log("准备查询", db);
+  //       cursorGetData(db, activeKey.value,use_message)
+  //       messages.value = use_message.getMessages;
+  //   })
+  // }
+})
 
 </script>
 
@@ -167,6 +199,8 @@ onMounted(() => {
 .input{
   position: absolute;
   bottom: 30px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
 
 .icon-wrapper{
@@ -177,7 +211,14 @@ onMounted(() => {
 }
 
 .chatContent {
+  top: 20px;
+  position: absolute; /* 或者 fixed，根据需要 */
+  bottom: 70px; /* 固定在底部 */
+  left: 0;
+  right: 0;
   overflow-x: hidden;
+  overflow-y: auto; /* 超出时显示滚动条 */
+  max-height: 600px; /* 设置最大高度 */
 }
 ul {
   list-style: none;

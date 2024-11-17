@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL, HEADER } from "./config";
+import { BASE_URL } from "./config";
 import router from "@/router/router";
 
 const service = axios.create({
@@ -53,7 +53,7 @@ service.interceptors.response.use(
         return res.data;
     },
     (error) => {
-        let message = "";
+        const message = "";
         console.error(error);
         return Promise.reject(message);
     }

@@ -4,7 +4,7 @@
             <TaskDetailsLift :databaseId="databaseId" />
         </div>
         <div class="taskMessage">
-            <n-split direction="horizontal" style="height: 100%" default-size="200px">
+            <n-split direction="horizontal" style="height: 100%;" default-size="200px">
                 <template #1>
                     <!--TODO:需for循环遍历-->
                     <n-space>
@@ -43,7 +43,7 @@
             maxRows: 3
         }" type="textarea">
             <template #suffix>
-                <span class="task-icon-wrapper" @click="request()" :disabled="isSending">
+                <span class="task-icon-wrapper" @click="request(user_message, user_info)" :disabled="isSending">
                     <n-icon :component="PaperPlaneOutline" size="30px" />
                 </span>
             </template>
@@ -62,16 +62,34 @@ import { useRoute } from 'vue-router';
 import {databaseId,tags,removeTag,messages,inputMessage,
     request,isSending
 } from '../../api/user/taskDetails';
+import useMsgStore from '../../store/msg';
+import userInfo from '../../store/user';
+import { cursorGetData, openDB } from '../../api/db/indexedDB';
+
+const user_message = useMsgStore()
+const user_info = userInfo()
+
 
 onMounted(() => {
+    user_message.messages = []
+    messages.value = []
     const route = useRoute(); // 确保 useRoute 在 mounted 生命周期中调用
   
     // 获取并设置初始的 route params
-    databaseId.value = route.params.id as string || null;
+    databaseId.value = route.params.id as string;
+
+    if(databaseId.value != ""){
+        openDB(databaseId.value, 1, databaseId.value, "id", ['sender', 'content']).then((db) => {
+            //打开数据库成功
+            console.log("查询成功",db)
+            cursorGetData(db, databaseId.value, user_message)
+            messages.value = user_message.getMessages;
+        })
+    }
   
     // 监听路由变化
     watch(() => route.params.id, (newId) => {
-      databaseId.value = newId as string || null;
+      databaseId.value = newId as string;
     });
   });
 
@@ -114,6 +132,8 @@ onMounted(() => {
     border-radius: 20px;
     /*圆角*/
     background-image: linear-gradient(to top, #fff1eb 0%, #ace0f9 100%);
+    display: flex; /* 使其支持 flex 布局 */
+    flex-direction: column; /* 纵向排列子元素 */
 }
 .taskLift{
     width: 22%;
@@ -123,9 +143,12 @@ onMounted(() => {
 }
 .pane {
   padding: 20px;
-  height: 100%;
+  height: 90%;
   overflow-y: auto;
-  /* border-radius: 20px; */
+  flex: 1;
+  /* position: fixed; 或者 fixed，根据需要 */
+  /* bottom: 0; */
+  border-radius: 20px;
 }
 .message-container {
   display: flex;

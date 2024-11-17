@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/valid-v-for -->
 <template>
     <n-layout>
         <n-layout-footer class="plazaFooter">
@@ -70,7 +71,7 @@ const page = ref(1)
     margin-left: 90%;
 }
 .plazaMiddle{
-    max-height: 640px;
+    max-height: 770px;
     overflow-y: auto; /*启用了垂直滚动条 */
     padding-right: 4px; /*为滚动条预留了空间，避免内容被遮挡*/
     flex: 1;

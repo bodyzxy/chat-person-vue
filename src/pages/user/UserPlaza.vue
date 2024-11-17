@@ -2,7 +2,7 @@
     <div class="grid">
         <div class="leftPlaza">
             <n-flex align="flex-start" class="leftIcon">
-                <n-float-button-group shape="square" position="relative" style="width: 100%;">
+                <n-float-button-group shape="square" position="relative" style="width: 100%; border-radius: 20px; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);">
                     <n-float-button style="width: 100%;">
                         
                     </n-float-button>
@@ -19,7 +19,7 @@
                         
                     </n-float-button>
                 </n-float-button-group>
-                <n-card content-style="padding: 0;">
+                <n-card content-style="padding: 0;" style="border-radius: 20px; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);">
                     <n-tabs
                     type="line"
                     size="large"
@@ -35,7 +35,7 @@
                                 :to="{ name: 'autherInfo', params: { id: author.name } }" 
                                 style="text-decoration: none;"
                                 >
-                                    <n-card style="margin-bottom: 10px;">
+                                    <n-card style="margin-bottom: 10px; border-radius: 20px;">
                                         <template #header>{{ author.name }}</template>
                                         {{ author.description }}
                                     </n-card>
@@ -51,7 +51,7 @@
                                 :to="{ name: 'taskDetails', params: { id: db.name } }" 
                                 style="text-decoration: none;"
                                 >
-                                    <n-card style="margin-bottom: 10px;">
+                                    <n-card style="margin-bottom: 10px; border-radius: 20px;">
                                         <template #header>{{ db.name }}</template>
                                         {{ db.description }}
                                     </n-card>
@@ -75,6 +75,7 @@ import PlazaRight from './element/PlazaRight.vue'
 const authors = [
   { name: 'bodyzxy', description: 'Description of Author 1' },
   { name: 'zxy', description: 'Description of Author 2' },
+  { name: 'xy', description: 'Description of Author 3' },
   { name: 'xy', description: 'Description of Author 3' }
 ];
 
@@ -102,10 +103,10 @@ const databases = [
     height: 100%;
 }
 .rightPlaza{
-    background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)
+    /* background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%) */
 }
 .leftIcon{
-    background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)
+    /* background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%) */
 }
 
 .leftIcon{

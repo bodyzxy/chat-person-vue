@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <n-space vertical class="space">
     <n-layout>
@@ -7,6 +8,9 @@
         </n-button>
         <n-button strong secondary round class="plaza">
           <RouterLink to="/userPlaza" style="color: black;">广场</RouterLink>
+        </n-button>
+        <n-button strong secondary round class="plaza">
+          <RouterLink to="/practice" style="color: black;">练习</RouterLink>
         </n-button>
         <n-button strong secondary round class="userInfo">
           <!-- TODO 这里要进行ROLE的判断然后来去定显示什么 -->
@@ -30,7 +34,7 @@
     import { RouterLink,RouterView } from 'vue-router';
     //页面整体颜色
     onMounted(() => {
-        document.querySelector("body")?.setAttribute("style", "background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%)");
+        document.querySelector("body")?.setAttribute("style", "background-image: white");
     });
 </script>
 

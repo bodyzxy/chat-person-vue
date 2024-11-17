@@ -33,7 +33,6 @@
                                     content="确定上传吗？" positive-text="确认" negative-text="取消"
                                     @positive-click="onPositiveClick" @negative-click="onNegativeClick" />
                             </n-thing>
-                            
                         </RouterLink>
                     </n-list-item>
                 </n-scrollbar>
