@@ -31,6 +31,7 @@ service.interceptors.request.use(
             config.headers['Content-Type'] = 'application/json;charset=UTF-8';
         }
         const token = localStorage.getItem("token");
+        console.log("-----------------------"+token)
         if(token != null){
             config.headers.Authorization = "Bearer " + token;
         } else{

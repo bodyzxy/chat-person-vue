@@ -12,6 +12,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@vue/runtime-core": "^3.5.12",
     "@vue/runtime-dom": "^3.5.12",
     "axios": "^1.7.2",

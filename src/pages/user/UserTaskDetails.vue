@@ -36,7 +36,15 @@
         </div>
         <!--TODO:另一个页面实现-->
         <div class="taskRight">
-            <TaskDetailsRight :databaseId="databaseId" />
+            <n-float-button :right="20" :top="70">
+                <RouterLink
+                :to="{ name: 'autherInfo', params: { id: userId } }"
+                >
+                    <n-icon>
+                        <PersonCircleOutline />
+                    </n-icon>
+                </RouterLink>
+            </n-float-button>
         </div>
         <n-input v-model:value="inputMessage" placeholder="输入" class="taskDataInput" style="width: 1040px;" :autosize="{
             minRows: 1,
@@ -56,18 +64,21 @@ import {
     PaperPlaneOutline,
 } from '@vicons/ionicons5';
 import TaskDetailsLift from './element/TaskDetailsLift.vue';
-import TaskDetailsRight from './element/TaskDetailsRight.vue';
 import { onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import {databaseId,tags,removeTag,messages,inputMessage,
     request,isSending
 } from '../../api/user/taskDetails';
-import useMsgStore from '../../store/msg';
-import userInfo from '../../store/user';
+import {useMsgStore} from '../../store/msg';
+import {userInfo} from '../../store/user';
 import { cursorGetData, openDB } from '../../api/db/indexedDB';
+import {PersonCircleOutline} from '@vicons/ionicons5';
 
 const user_message = useMsgStore()
 const user_info = userInfo()
+
+//TODO:需要后端传送
+const userId = "bodyzxy";
 
 
 onMounted(() => {

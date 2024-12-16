@@ -2,22 +2,31 @@
     <div class="page">
         <n-layout has-sider class="userLayout">
             <n-layout-sider class="userSider">
-                <n-avatar class="avatar" round :size="100"
-                    src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                <RouterLink :to="{ name: 'userInfoMe' }">
+                    <n-avatar class="avatar-user" round :size="100"
+                        src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                </RouterLink>
                 <br>
                 <n-gradient-text class="name" gradient="linear-gradient(90deg, red 0%, green 50%, blue 100%)">
                     姓名
                 </n-gradient-text>
                 <n-divider />
                 <n-button strong secondary round type="primary" style="width: 260px;height: 50px;">
-                    历史
+                    <p style="color: black;">历史</p>
                 </n-button>
                 <n-button strong secondary round type="primary" class="word">
                     <RouterLink to="/userInfo/data" style="color: black;">数据库</RouterLink>
                 </n-button>
-                <n-button strong secondary round type="primary" class="word">
-                    <RouterLink to="/userDatabase" style="color: black;">创建数据库</RouterLink>
+                <n-button strong secondary round type="primary" class="word" @click="showModal = true">
+                    <p style="color: black;">创建数据库</p>
                 </n-button>
+                <n-modal v-model:show="showModal" :mask-closable="false" preset="dialog" title="确认" content="你确认"
+                    positive-text="确认" negative-text="算了" @positive-click="onPositiveClick"
+                    @negative-click="onNegativeClick">
+                    <template #default>
+                        <n-input v-model:value="inputName" placeholder="请输入数据库名称" />
+                    </template>
+                </n-modal>
                 <n-button strong secondary round type="primary" class="word" @click="logout">
                     退出
                 </n-button>
@@ -29,7 +38,8 @@
                         <n-scrollbar style="max-height: 100%;">
                             <n-list-item v-for="(task, index) in database">
                                 <!--TODO: 这里需要将params改为id-->
-                                <RouterLink :to="{name:'taskDetails', params: {id:task.name}}" style="text-decoration: none;">
+                                <RouterLink :to="{name:'taskDetails', params: {id:task.name}}"
+                                    style="text-decoration: none;">
                                     <n-thing :title="task.name" content-type="margin-top: 10px">
                                         <template #description>
                                             <n-space size="small" style="margin-top: 4px;">
@@ -41,6 +51,9 @@
                                         {{ task.content }}
                                     </n-thing>
                                 </RouterLink>
+                                <n-icon style="margin-left: 95%;" size="30">
+                                    <RemoveCircleOutline />
+                                </n-icon>
                             </n-list-item>
                         </n-scrollbar>
                     </n-list>
@@ -51,13 +64,34 @@
 </template>
 
 <script setup lang="ts" name="UserInfo">
-import { RouterLink} from 'vue-router';
+import { RouterLink, useRouter} from 'vue-router';
 import {logout} from '../../api/user/logout';
-import { onMounted, Ref, ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { createDatabase } from '../../api/user/userInfo';
+import { useMessage } from 'naive-ui';
+import {RemoveCircleOutline} from "@vicons/ionicons5"
 
-
-
+const message = useMessage()
+const showModal = ref(false)
 const database = ref<DatabaseInfo[]>([]);
+const inputName = ref('')
+const router = useRouter()
+//创建数据库
+async function onPositiveClick(){
+    if(inputName.value.trim() && inputName.value != ''){
+        createDatabase(inputName.value);
+        message.success("创建成功")
+        router.push('/userDatabase')
+    } else {
+        message.error("输入为空"+inputName.value)
+    }
+      
+}
+
+function onNegativeClick(){
+    message.success('取消创建')
+}
+
 
 onMounted(async () => {
     if (indexedDB.databases) {
@@ -95,7 +129,7 @@ onMounted(async () => {
     position: relative;
     height: 590px;
 }
-.avatar{
+.avatar-user{
     left: 32%;
     display: flex;
     justify-content: center;

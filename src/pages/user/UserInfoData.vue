@@ -12,7 +12,7 @@
         <n-layout-footer class="userFooter">
             <!--TODO 使用for循环遍历显示-->
             <n-list hoverable clickable class="list">
-                <n-scrollbar style="max-height: 560px;">
+                <n-scrollbar style="max-height: 620px;">
                     <n-list-item v-for="(task, index) in dataBase">
 
                         <!--TODO:记得加数据库名字-->

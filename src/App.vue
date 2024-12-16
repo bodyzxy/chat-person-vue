@@ -1,7 +1,10 @@
 <template>
-  <n-message-provider>
-    <Index/>
-  </n-message-provider>
+  <n-dialog-provider>
+    <n-message-provider>
+      <Index/>
+    </n-message-provider>
+  </n-dialog-provider>
+  
 </template>
 
 <script setup lang="ts" name-="App">

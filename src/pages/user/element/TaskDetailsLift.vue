@@ -1,66 +1,84 @@
 <template>
     <div>
-        <n-icon @click="showPopover = !showPopover" class="taskLift">
-            <ChatbubbleEllipsesSharp />
-        </n-icon>
-
-        <n-popover v-model:show="showPopover" trigger="manual" placement="bottom">
-            <template #trigger>
-                <span></span>
+        <div>
+            <n-float-button position="relative" @click="togglePopover">
+                <n-badge :value="counts" :offset="[6, -8]">
+                    <n-icon>
+                        <ChatbubbleEllipsesOutline />
+                    </n-icon>
+                </n-badge>
+            </n-float-button>
+        </div>
+        <n-virtual-list
+        style="max-height: 540px; margin-top: 20px; border-radius: 20px;margin-right: 10%;"
+        :item-size="50"
+        :items="items"
+        item-resizable
+        >
+            <template #default="{ item, index }">
+                <div
+                :key="item.key"
+                class="item"
+                @click="showChat(index)"
+                style="
+                    padding: 10px; 
+                    margin: 5px 0; 
+                    background-color: #e6f7ff; 
+                    border-radius: 10px; 
+                    border-bottom: 1px solid #d9d9d9; 
+                    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+                "         
+                >
+                <span
+                    style="
+                        font-size: 12px; 
+                        line-height: 1.5; 
+                        word-wrap: break-word; 
+                        word-break: break-word; 
+                        white-space: normal;
+                    "
+                    >
+                        {{ item.message }}
+                    </span>
+                </div>
             </template>
-            <div class="userChat">
-                <!--TODO:发送消息同步到下面显示-->
-                <n-input v-model:value="message" placeholder="输入" class="taskDetailsInput" :autosize="{
-            minRows: 1,
-            maxRows: 3
-        }" type="textarea">
-                    <template #suffix>
-                        <span class="task-icon-wrapper" @click="request()">
-                            <n-icon :component="PaperPlaneOutline" size="30px" />
-                        </span>
-                    </template>
-                </n-input>
-                <!-- TODO:改为用户的评论 -->
-                <n-list>
-                    <n-list-item v-for="(users,index) in user" :key="index" @click="showChat(users)"
-                        class="userChatList">
-                        <n-card>
-                            <template #header>
-                                <div class="userCardHeader">
+        </n-virtual-list>
 
-                                    <n-avatar :size="48" :src="users.image" />
+        <transition name="modal">
+            <n-modal v-model:show="showModal" title="聊天" size="large">
+                <UserChatInfo :user="selectedUser" />
+            </n-modal>
+        </transition>
 
-                                    <span class="userName">{{ users.name }}</span>
-                                </div>
-                            </template>
-
-                            <p class="userContent">{{ users.content }}</p>
-                        </n-card>
-                    </n-list-item>
-                </n-list>
-
-                <!--弹窗显示评论-->
-                <transition name="modal">
-                    <n-modal v-model:show="showModal" title="聊天" size="large">
-                        <UserChatInfo :user="selectedUser" />
-                    </n-modal>
-                </transition>
-            </div>
-        </n-popover>
     </div>
 </template>
 
 <script setup lang="ts" name="TaskDetailsLift">
 import {
-    ChatbubbleEllipsesSharp,
-    PaperPlaneOutline
+    ChatbubbleEllipsesOutline
 } from '@vicons/ionicons5';
 import {user} from '../../../api/user/userInfoData';
 import UserChatInfo from './UserChatInfo.vue';
-import {showPopover,showModal,selectedUser,showChat,message} from '../../../api/user/taskDetailsLift';
+import {showPopover,showModal,selectedUser,message} from '../../../api/user/taskDetailsLift';
 
 const props = defineProps<{ databaseId: string | null }>();  // 允许 databaseId 为 string 或 null
 
+const counts = user.value.length;
+
+const items = user.value.map((u, i) => ({
+  key: `${i}`,
+  avatar: u.image,
+  message: u.content,
+}));
+// 点击 n-list-item 时显示用户详情
+function showChat(index: number) {
+  selectedUser.value = user.value[index];  // 设置当前选择的用户
+  showModal.value = true;  // 显示弹框
+}
+// 切换显示状态
+function togglePopover() {
+    showPopover.value = !showPopover.value;
+}
 function request(){
     if (message.value.trim() !== '') {
         const date = new Date();
@@ -134,5 +152,15 @@ function request(){
 }
 .task-icon-wrapper {
     cursor: pointer; /* 鼠标变成小手指 */
+}
+.item {
+  display: flex;
+  align-items: flex-start;
+}
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 </style>

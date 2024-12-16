@@ -80,10 +80,12 @@
 <script setup lang="ts" name="Login">
 import { GlassesOutline, Glasses } from '@vicons/ionicons5'
 import { ref } from 'vue';
-import {userLogin} from '@/api/user/login';
-import type { LoginUser } from '@/common/user/loginUser';
+import {userLogin} from '../../src/api/user/login';
+import type { LoginUser } from '../../src/common/user/loginUser';
 import {userRegister} from '../api/user/register';
-import type { register } from '@/common/user/registerUser';
+import type { register } from '../../src/common/user/registerUser';
+
+localStorage.removeItem("token");
 
 const user = ref<LoginUser>({
     username: "",

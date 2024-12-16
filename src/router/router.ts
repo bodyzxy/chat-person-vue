@@ -1,13 +1,5 @@
-import Home from "@/pages/Home.vue";
 import Login from "@/pages/Login.vue";
 import { createRouter, createWebHistory } from "vue-router";
-import UserInfo from "@/pages/user/index.vue";
-import UserDatabase from "@/pages/user/UserDatabase.vue";
-import UserInfoData from "@/pages/user/UserInfoData.vue";
-import UserPlaza from "@/pages/user/UserPlaza.vue";
-import TaskDetails from "@/pages/user/UserTaskDetails.vue";
-import AutherInfo from "@/pages/user/AutherInfo.vue";
-import PracticePage from "@/pages/nlpPractice/PracticePage.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -19,7 +11,7 @@ const router = createRouter({
         {
             name:'home',
             path:'/home',
-            component:Home,
+            component: () => import('@/pages/Home.vue'),
             meta: {requiresAuth: true} //路由认证
         },
         {
@@ -30,43 +22,49 @@ const router = createRouter({
         {
             name:'userInfo',
             path:'/userInfo',
-            component:UserInfo,
+            component: () => import('@/pages/user/index.vue'),
             meta: {requiresAuth: true} //路由认证
         },
         {
             name:'userDatabase',
             path:'/userDatabase',
-            component:UserDatabase,
+            component: () => import('@/pages/user/UserDatabase.vue'),
             meta: {requiresAuth: true} //路由认证
         },
         {
             name:'userInfoData',
             path:'/userInfo/data',
-            component:UserInfoData,
+            component: () => import('@/pages/user/UserInfoData.vue'),
             meta:{requiresAuth: true}
         },
         {
             name:'userPlaza',
             path:'/userPlaza',
-            component:UserPlaza,
+            component: () => import('@/pages/user/UserPlaza.vue'),
             meta:{requiresAuth: true}
         },
         {
             name:'taskDetails',
             path:'/task/:id',
-            component:TaskDetails,
+            component: () => import('@/pages/user/UserTaskDetails.vue'),
             meta: {requiresAuth: true} //路由认证
         },
         {
             name:'autherInfo',
             path:'/autherInfo/:id',
-            component:AutherInfo,
+            component: () => import('@/pages/user/AutherInfo.vue'),
             meta: {requiresAuth: true} //路由认证
         },
         {
             name: 'practice',
             path:'/practice',
-            component:PracticePage,
+            component: () => import('@/pages/nlpPractice/PracticePage.vue'),
+            meta: {requiresAuth: true}
+        },
+        {
+            name: 'userInfoMe',
+            path: '/userInfoMe',
+            component: () => import('@/components/UserInfoMe.vue'),
             meta: {requiresAuth: true}
         }
     ]

@@ -16,9 +16,9 @@
           <div class="chatContent" ref="chatBox">
             <!--对话的显示需要定义数据类型，这里要使用v-for进行循环遍历-->
             <div v-for="(messageInfo, index) in messages" :key="index" class="home-message-container"
-              :class="{'home-ai-message': messageInfo.sender === 'AI'}">
+              :class="{'home-ai-message': messageInfo.sender === 'assistant'}">
               <!--AI回答时在左边显示-->
-              <n-avatar v-if="messageInfo.sender === 'AI'" round :size="48" src="" />
+              <n-avatar v-if="messageInfo.sender === 'assistant'" round :size="48" src="" />
 
               <!--用户的消息显示在右边-->
               <n-avatar v-else round :size="48" src="" />
@@ -39,7 +39,7 @@
               </span>
             </template>
             <template #suffix>
-              <span class="icon-wrapper" @click="sendMessage(activeKey,user_info,use_message)" :disabled="isSending">
+              <span class="icon-wrapper" @click="sendMessage(activeKey)" :disabled="isSending">
                 <n-icon :component="PaperPlaneOutline" size="20px" />
               </span>
             </template>
@@ -62,8 +62,8 @@ import {
   Unlink
 } from '@vicons/ionicons5';
 import { cursorGetData, deleteData, openDB } from '../api/db/indexedDB';
-import useMsgStore from '../store/msg';
-import userInfo from '../store/user';
+import {useMsgStore} from '../store/msg';
+import {userInfo} from '../store/user';
 
 const inverted = ref(false);
 const siderHeight = ref('95vh');
@@ -169,14 +169,6 @@ const menuOptions: MenuOption[] = [
 ]
 
 onMounted(() => {
-  // if(activeKey.value != ''){
-  //   openDB(activeKey.value, 1, activeKey.value, "id", ['sender', 'content']).then((db) => {
-  //     //打开数据库成功
-	// 			console.log("准备查询", db);
-  //       cursorGetData(db, activeKey.value,use_message)
-  //       messages.value = use_message.getMessages;
-  //   })
-  // }
 })
 
 </script>

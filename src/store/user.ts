@@ -4,9 +4,9 @@ interface User{
     username: string;
 }
 
-const userInfo = defineStore('user', {
+export const userInfo = defineStore('user', {
     state: () => ({
-        username: '1',
+        username: 'user',
     }),
 
     actions: {
@@ -17,11 +17,9 @@ const userInfo = defineStore('user', {
     },
     getters: {
         // 获取用户的 username
-        getUserInfo(state) {
+        getUserName(state) {
           return state.username;
-        },
+        }
     }
 })
 
-
-export default userInfo;

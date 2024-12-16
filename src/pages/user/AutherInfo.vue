@@ -71,7 +71,7 @@
               </div>
               <!--跳转介绍页面-->
               <div v-if="currentView === 'introduction'">
-                <p>介绍</p>
+                <UserIntroduce />
               </div>
               <!--跳转赞助页面-->
               <div v-if="currentView === 'sponsor'">
@@ -89,6 +89,7 @@
 import { onMounted, ref, onBeforeUnmount, onUnmounted } from "vue";
 import { useRoute } from 'vue-router';
 import {visibleDataBase,handleScroll} from '../../api/user/plazaMiddle';
+import UserIntroduce from "../../components/UserIntroduce.vue";
 
 const autherId = ref('')
 const currentView = ref('database')
