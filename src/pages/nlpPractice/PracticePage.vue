@@ -20,7 +20,9 @@
                 </n-button>
             </div>
             <div class="practiceMiddon" v-if="isSplit">
-
+                <n-card style="height: 100%;">
+                    
+                </n-card>
             </div>
             <div class="practiceCenter" v-if="isSplit">
                 <!-- 中间内容 -->

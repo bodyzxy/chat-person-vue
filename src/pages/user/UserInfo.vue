@@ -51,7 +51,7 @@
                                         {{ task.content }}
                                     </n-thing>
                                 </RouterLink>
-                                <n-icon style="margin-left: 95%;" size="30">
+                                <n-icon style="margin-left: 95%;" size="30" @click="removeDatabase(task.name)">
                                     <RemoveCircleOutline />
                                 </n-icon>
                             </n-list-item>
@@ -70,6 +70,7 @@ import { onMounted, ref } from 'vue';
 import { createDatabase } from '../../api/user/userInfo';
 import { useMessage } from 'naive-ui';
 import {RemoveCircleOutline} from "@vicons/ionicons5"
+import { deleteData } from '../../api/db/indexedDB';
 
 const message = useMessage()
 const showModal = ref(false)
@@ -92,6 +93,14 @@ function onNegativeClick(){
     message.success('取消创建')
 }
 
+function removeDatabase(name: string | null){
+    if(name != null){
+        deleteData(name)
+        window.location.reload()
+    }else{
+        console.log("数据库不存在")
+    }
+}
 
 onMounted(async () => {
     if (indexedDB.databases) {

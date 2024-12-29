@@ -26,14 +26,17 @@
                                     </n-space>
                                 </template>
                                 {{ task.content }}
-                                <n-icon @click="showModel = true" size="40px" class="share"
-                                    :component="ArrowRedoCircle"></n-icon>
-                                <!--TODO 实现上传-->
-                                <n-modal v-model:show="showModel" :mask-closable="false" preset="dialog" title="确定"
-                                    content="确定上传吗？" positive-text="确认" negative-text="取消"
-                                    @positive-click="onPositiveClick" @negative-click="onNegativeClick" />
                             </n-thing>
                         </RouterLink>
+                        <n-icon @click="showModel = true" size="40px" class="share"
+                            :component="ArrowRedoCircle"></n-icon>
+                        <n-icon style="margin-left: 96%;" size="40" @click="removeDatabase(task.id)">
+                            <RemoveCircleOutline />
+                        </n-icon>
+                        <!--TODO 实现上传-->
+                        <n-modal v-model:show="showModel" :mask-closable="false" preset="dialog" title="确定"
+                            content="确定上传吗？" positive-text="确认" @positive-click="onPositiveClick(task.id)"
+                            @negative-click="onNegativeClick" />
                     </n-list-item>
                 </n-scrollbar>
             </n-list>
@@ -42,10 +45,26 @@
 </template>
 
 <script setup lang="ts" name="UserInfo">
-    import {ArrowRedoCircle} from '@vicons/ionicons5';
-    import {showModel,onPositiveClick,onNegativeClick} from '../../api/user/userInfo';
+    import {ArrowRedoCircle,RemoveCircleOutline} from '@vicons/ionicons5';
+    import {showModel,onPositiveClick,onNegativeClick,removeDatabase} from '../../api/user/userInfo';
     import {dataBase} from '../../api/user/userInfoData';
 import { RouterLink } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { request } from '../../http';
+import { userInfo } from '../../store/user';
+
+const user = userInfo()
+const data2 = ref([])
+
+// onMounted(async () => {
+//     try{
+//         const response = await request.get(`/database/getUserData/${user.id}`)
+//         //TODO:将data2赋值上去记得
+//         data2.value = response.data
+//     }catch(error){
+//         console.log("获取出错：",error)
+//     }
+// })
 </script>
 
 <style>

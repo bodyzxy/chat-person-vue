@@ -10,48 +10,56 @@ export interface User {
 
 export const dataBase = [
     {
+        'id': 1,
         'name': "bodyzxy",
         'title': "学习",
         'time': "2024/8/12",
         'content': "静夜思是怎么背的"
     },
     {
+        'id': 2,
         'name': "boyzxy",
         'title': "学习1",
         'time': "2024/8/22",
         'content': "静夜思是怎么背的1"
     },
     {
+        'id': 3,
         'name': "bodyzxy",
         'title': "学习2",
         'time': "2024/8/23",
         'content': "静夜思是怎么背的2"
     },
     {
+        'id': 4,
         'name': "bodyzxy",
         'title': "学习3",
         'time': "2024/8/23",
         'content': "静夜思是怎么背的3"
     },
     {
+        'id': 5,
         'name': "bodyzxy",
         'title': "学习4",
         'time': "2024/8/24",
         'content': "静夜思是怎么背的4"
     },
     {
+        'id': 6,
         'name': "bodyzxy",
         'title': "学习5",
         'time': "2024/8/25",
         'content': "静夜思是怎么背的5"
     },
     {
+        'id': 7,
         'name': "bodyzxy",
         'title': "学习6",
         'time': "2024/8/26",
         'content': "静夜思是怎么背的6"
     },
     {
+        'id': 8,
         'name': "bodyzxy",
         'title': "学习7",
         'time': "2024/8/26",
