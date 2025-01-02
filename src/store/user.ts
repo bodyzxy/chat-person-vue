@@ -8,7 +8,7 @@ interface User{
 export const userInfo = defineStore('user', {
     state: () => ({
         id:1,
-        username: 'user',
+        username: 'user nnnn',
     }),
 
     actions: {

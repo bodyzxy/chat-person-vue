@@ -1,5 +1,6 @@
 import { ref } from "vue";
 import { dataBase } from "./userInfoData";
+import { request } from "../../http";
 
 const itemsPerLoad = 6;
 export const visibleDataBase = ref(dataBase.slice(0,itemsPerLoad))
@@ -14,7 +15,7 @@ export const handleScroll = (event: Event) => {
     if(target.scrollTop + target.clientHeight >= target.scrollHeight - 10 && !loadingMore){
         loadingMore = true;
         loadMore();
-}
+    }
 }
 
 const loadMore = () => {
@@ -26,4 +27,14 @@ setTimeout(() => {
     visibleDataBase.value = [...visibleDataBase.value, ...nextItems];
     loadingMore = false;
 },500);
+}
+
+//TODO:获取热门数据库
+export const getHotDatabase = async () => {
+    try{
+        const response = await request.get("/database/getHotDatabase")
+        console.log(response + "热门数据数据获取")
+    }catch(error){
+        console.log("获取出错：",error);
+    }
 }

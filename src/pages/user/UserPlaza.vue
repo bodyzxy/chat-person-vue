@@ -71,6 +71,8 @@
 import { RouterLink } from 'vue-router';
 import PlazaMiddle from './element/PlazaMiddle.vue'
 import PlazaRight from './element/PlazaRight.vue'
+import { onMounted } from 'vue';
+import { getHotDatabase } from '../../api/user/plazaMiddle';
 
 const authors = [
   { name: 'bodyzxy', description: 'Description of Author 1' },
@@ -84,6 +86,10 @@ const databases = [
   { name: 'Database 2', description: 'Description of Database 2' },
   { name: 'Database 3', description: 'Description of Database 3' }
 ];
+
+onMounted(async () => {
+    getHotDatabase()
+})
 </script>
 
 <style>
