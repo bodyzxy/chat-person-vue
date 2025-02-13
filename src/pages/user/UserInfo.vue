@@ -8,7 +8,7 @@
                 </RouterLink>
                 <br>
                 <n-gradient-text class="name" gradient="linear-gradient(90deg, red 0%, green 50%, blue 100%)">
-                    姓名
+                    {{ username }}
                 </n-gradient-text>
                 <n-divider />
                 <n-button strong secondary round type="primary" style="width: 260px;height: 50px;">
@@ -32,7 +32,7 @@
                 </n-button>
             </n-layout-sider>
             <n-layout>
-                <n-layout-footer class="userFooter">
+                <n-layout-footer class="userFooterInfo">
                     <!--TODO 使用for循环遍历显示-->
                     <n-list hoverable clickable class="list">
                         <n-scrollbar style="max-height: 100%;">
@@ -77,12 +77,13 @@ const showModal = ref(false)
 const database = ref<DatabaseInfo[]>([]);
 const inputName = ref('')
 const router = useRouter()
+const user = JSON.parse(localStorage.getItem('user') || '{}')
+const username = ref<String>(user.username)
 //创建数据库
 async function onPositiveClick(){
     if(inputName.value.trim() && inputName.value != ''){
-        createDatabase(inputName.value);
+        await createDatabase(inputName.value);
         message.success("创建成功")
-        router.push('/userDatabase')
     } else {
         message.error("输入为空"+inputName.value)
     }
@@ -145,7 +146,7 @@ onMounted(async () => {
     align-items: center;
     top: 20px; 
 }
-.userFooter{
+.userFooterInfo{
     height: 100%;
 }
 .name{

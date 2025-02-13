@@ -4,28 +4,15 @@
 import {LogoGithub,MailOutline} from "@vicons/ionicons5"
 import { computed, onMounted, reactive, ref } from "vue";
 import { FormInst, FormItemInst, FormItemRule, FormRules, useMessage } from "naive-ui";
-import { getUserInfo, saveInfomation } from "../api/user/userInfo";
+import { getUserInfo, saveInfomation, saveUserInfo} from "../api/user/userInfo";
 import { useUserInfoStore } from "../store/userInfoStore";
+import {dynamicForm, introduction} from "../api/user/userInfo";
 
-interface ModelType {
-  password: string | null
-  reenteredPassword: string | null
-}
 
-const value = ref('')
-const userInfoStore = useUserInfoStore()
 const formRef = ref<FormInst | null>(null)
 const rPasswordFormItemRef = ref<FormItemInst | null>(null)
 const message = useMessage()
-const introduction = ref("我这辈子最疯狂的事，发生在我在 Amazon"+
-                        "当软件工程师的时候，故事是这样的："+
-                        "那时我和女朋友住在一起，正在家里远程工作。忽然同事给我发来了紧急消息：”我们的服务出现了"+
-                        "SEV 2 级别的故障！需要所有的人马上协助！“我们组的应用全挂掉了。"+
-                       " 当我还在费力的寻找修复方法的时候，忽然闻到隔壁房间的的焦味，防火报警器开始鸣叫。");
-const model = ref<ModelType>({
-      password: userInfoStore.password,
-      reenteredPassword: userInfoStore.rpassword
-})
+
 const rules: FormRules = {
     password: [
         {
@@ -52,17 +39,9 @@ const rules: FormRules = {
     ]
 }
 
-const dynamicForm = reactive({
-    name: '',
-    user: {
-        address: ''
-    },
-    phone: '',
-    hobbies: [{ hobby: '' }]
-})
 const options = computed(() => {
   return ['@gmail.com', '@163.com', '@qq.com'].map((suffix) => {
-    const prefix = value.value.split('@')[0]
+    const prefix = dynamicForm.email.split('@')[0]
     return {
       label: prefix + suffix,
       value: prefix + suffix
@@ -70,7 +49,7 @@ const options = computed(() => {
   })
 })
 function handlePasswordInput() {
-    if (model.value.reenteredPassword) {
+    if (dynamicForm.reenteredPassword) {
         rPasswordFormItemRef.value?.validate({ trigger: 'password-input' })
     }
 }
@@ -79,21 +58,17 @@ function validatePasswordStartWith(
       value: string
     ): boolean {
       return (
-        !!model.value.password
-        && model.value.password.startsWith(value)
-        && model.value.password.length >= value.length
+        !!dynamicForm.password
+        && dynamicForm.password.startsWith(value)
+        && dynamicForm.password.length >= value.length
       )
 }
 function validatePasswordSame(rule: FormItemRule, value: string): boolean {
-    return value === model.value.password
+    return value === dynamicForm.password
 }
 
 onMounted(() => {
-    //     getUserInfo()
-    dynamicForm.name = userInfoStore.username
-    dynamicForm.user.address = userInfoStore.address
-    dynamicForm.phone = userInfoStore.phone
-    value.value = userInfoStore.email
+    getUserInfo()
 })
 </script>
 
@@ -143,7 +118,7 @@ onMounted(() => {
         </div>
         <div style="flex: 1; overflow-y: auto;">
             <n-divider />
-            <n-form ref="fromRef" :model="dynamicForm" style="maxWidth: 640px; margin-top: 50px;">
+            <n-form ref="fromRef" :model="dynamicForm" style=" margin-top: 50px;">
                 <n-form-item label="姓名" path="name" :rule="{
                     required: true,
                     message: '请输入姓名',
@@ -158,21 +133,21 @@ onMounted(() => {
                     <n-input v-model:value="dynamicForm.phone" placeholder="电话号码" />
                 </n-form-item>
             </n-form>
-            <n-form ref="formRef" :model="model" :rules="rules">
+            <n-form ref="formRef" :model="dynamicForm" :rules="rules">
                 <n-form-item path="password" label="密码">
-                    <n-input v-model:value="model.password" type="password" @input="handlePasswordInput"
+                    <n-input v-model:value="dynamicForm.password" type="password" @input="handlePasswordInput"
                         @keydown.enter.prevent />
                 </n-form-item>
                 <n-form-item ref="rPasswordFormItemRef" first path="reenteredPassword" label="重复密码">
-                    <n-input v-model:value="model.reenteredPassword" :disabled="!model.password" type="password"
+                    <n-input v-model:value="dynamicForm.reenteredPassword" :disabled="!dynamicForm.password" type="password"
                         @keydown.enter.prevent />
                 </n-form-item>
             </n-form>
-            <n-auto-complete v-model:value="value" :input-props="{
+            <n-auto-complete v-model:value="dynamicForm.email" :input-props="{
                 autocomplete: 'disabled',
             }" :options="options" placeholder="邮箱" clearable style="margin-top: 6px;" />
 
-            <n-button strong secondary round type="primary" style="width: 100px; margin-left: 40%; margin-top: 20px;">
+            <n-button strong secondary round type="primary" style="width: 100px; margin-left: 40%; margin-top: 20px;" @click="saveUserInfo(dynamicForm)">
                 保存
             </n-button>
         </div>

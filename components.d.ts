@@ -65,6 +65,7 @@ declare module 'vue' {
     NScrollbar: typeof import('naive-ui')['NScrollbar']
     NSkeleton: typeof import('naive-ui')['NSkeleton']
     NSpace: typeof import('naive-ui')['NSpace']
+    NSpin: typeof import('naive-ui')['NSpin']
     NSplit: typeof import('naive-ui')['NSplit']
     NStatistic: typeof import('naive-ui')['NStatistic']
     NSwitch: typeof import('naive-ui')['NSwitch']

@@ -57,7 +57,17 @@ import {
     Unlink
 } from '@vicons/ionicons5';
 import {submit,handleFileChange,fileInput,messages,removeTag,inputMessage,submitDatabse,isSending,tags} from '../../api/userDatabase/userFiles';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
+const databaseId = ref();
+
+onMounted(() => {
+    const route = useRoute();
+    if(route.params.id){
+        databaseId.value = route.params.id;
+    }
+})
 </script>
 
 <style>

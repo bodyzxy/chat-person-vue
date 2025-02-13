@@ -27,7 +27,7 @@ const router = createRouter({
         },
         {
             name:'userDatabase',
-            path:'/userDatabase',
+            path:'/userDatabase/:id',
             component: () => import('@/pages/user/UserDatabase.vue'),
             meta: {requiresAuth: true} //路由认证
         },
@@ -70,14 +70,14 @@ const router = createRouter({
     ]
 })
 
-// router.beforeEach((to, from,next) => {
-//     const token = localStorage.getItem('token');
-//     if(to.matched.some(record => record.meta.requiresAuth) && !token){
-//         //若未登录重定向
-//         next('/login')
-//     }else{
-//         next();//继续导航
-//     }
-// })
+router.beforeEach((to, from,next) => {
+    const token = localStorage.getItem('token');
+    if(to.matched.some(record => record.meta.requiresAuth) && !token){
+        //若未登录重定向
+        next('/login')
+    }else{
+        next();//继续导航
+    }
+})
 
 export default router

@@ -7,8 +7,8 @@ interface User{
 
 export const userInfo = defineStore('user', {
     state: () => ({
-        id:1,
-        username: 'user nnnn',
+        id: 1,
+        username: 'user',
     }),
 
     actions: {
@@ -22,6 +22,9 @@ export const userInfo = defineStore('user', {
         // 获取用户的 username
         getUserName(state) {
           return state.username;
+        },
+        getUserId(state) {
+            return state.id;
         }
     }
 })

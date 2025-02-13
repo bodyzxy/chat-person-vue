@@ -13,6 +13,9 @@ export async function logout(){
 
             // 登出后跳转到登录页面
             router.push('/login');
+            setTimeout(() => {
+                window.location.reload(); // 让页面强制刷新
+            }, 100);
         }else{
             console.log("Failed to logout")
         }

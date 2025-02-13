@@ -7,7 +7,7 @@
                 <n-scrollbar>
                     <div class="plazaMiddle" @scroll="handleScroll">
                         <n-list-item v-for="(task, index) in visibleDataBase" class="list-item-palaza">
-                            <RouterLink :to="{name:'taskDetails', params: {id:task.name}}"
+                            <RouterLink :to="{name:'taskDetails', params: {id:task.id}}"
                                 style="text-decoration: none;">
                                 <n-thing :title="task.title" content-type="margin-top: 10px">
                                     <template #description>
@@ -22,8 +22,8 @@
                             </RouterLink>
                         </n-list-item>
                     </div>
-                    <div class="pagination-container">
-                        <n-pagination v-model:page="page" :page-count="100" simple/>
+                    <div class="pagination-container" v-if="visibleDataBase.length">
+                        <n-pagination v-model:page="page" :page-count="totalPages" simple/>
                     </div>
                 </n-scrollbar>
             </n-list>
@@ -33,11 +33,18 @@
 </template>
 
 <script setup lang="ts">
-    import { onMounted, onUnmounted, ref } from 'vue';
-    import {visibleDataBase,handleScroll} from '../../../api/user/plazaMiddle';
-
-
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { visibleDataBase, handleScroll, totalPages, loadDatabaseData, currentPage } from '../../../api/user/plazaMiddle';
 const page = ref(1)
+
+watch(page, (newPage) => {
+    currentPage.value = newPage - 1; // 更新当前页（假设 page 从 1 开始）
+    loadDatabaseData(); // 重新加载数据
+})
+onMounted(() => {
+    loadDatabaseData();
+})
+
 </script>
 
 <style>
@@ -59,7 +66,7 @@ const page = ref(1)
     margin-top: 10px;
 }
 .plazaList{
-    background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+    /* background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%); */
     border-radius: 10px;
     height: 100%;
 }
@@ -78,6 +85,7 @@ const page = ref(1)
 }
 .list-item-palaza {
     height: 20vh; /* 使每个列表项的高度是浏览器视口高度的20% */
+    background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
     width: 100%; /* 宽度占满容器 */
 }
 .pagination-container {

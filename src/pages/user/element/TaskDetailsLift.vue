@@ -12,14 +12,14 @@
         <n-virtual-list
         style="max-height: 540px; margin-top: 20px; border-radius: 20px;margin-right: 10%;"
         :item-size="50"
-        :items="items"
+        :items="comments.filter(item => item.pid === 0)"
         item-resizable
         >
             <template #default="{ item, index }">
                 <div
                 :key="item.key"
                 class="item"
-                @click="showChat(index)"
+                @click="showChat(item)"
                 style="
                     padding: 10px; 
                     margin: 5px 0; 
@@ -46,7 +46,7 @@
 
         <transition name="modal">
             <n-modal v-model:show="showModal" title="聊天" size="large">
-                <UserChatInfo :user="selectedUser" />
+                <UserChatInfo :user="selectedComment" :replies="selectedComment.replies" />
             </n-modal>
         </transition>
 
@@ -60,19 +60,24 @@ import {
 import {user} from '../../../api/user/userInfoData';
 import UserChatInfo from './UserChatInfo.vue';
 import {showPopover,showModal,selectedUser,message} from '../../../api/user/taskDetailsLift';
+import {getComments} from '../../../api/comment/index';
+import { onMounted, ref } from 'vue';
+import { useCommentStore } from '../../../store/common';
 
 const props = defineProps<{ databaseId: string | null }>();  // 允许 databaseId 为 string 或 null
 
 const counts = user.value.length;
+const comments = ref(useCommentStore().comments);
+const selectedComment = ref(useCommentStore().comments);
 
-const items = user.value.map((u, i) => ({
-  key: `${i}`,
-  avatar: u.image,
-  message: u.content,
-}));
+// const items = user.value.map((u, i) => ({
+//   key: `${i}`,
+//   avatar: u.image,
+//   message: u.content,
+// }));
 // 点击 n-list-item 时显示用户详情
-function showChat(index: number) {
-  selectedUser.value = user.value[index];  // 设置当前选择的用户
+function showChat(comment: any) {
+  selectedComment.value = comment;  // 设置当前选择的用户
   showModal.value = true;  // 显示弹框
 }
 // 切换显示状态
@@ -99,6 +104,11 @@ function request(){
       console.log('消息为空');
     }
 }
+
+onMounted(async () => {
+    const id = "your-id";  // 获取相应的id
+    // comments.value = await getComments(id);
+});
 </script>
 
 <style>

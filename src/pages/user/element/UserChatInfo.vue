@@ -1,15 +1,15 @@
 <template>
     <div v-if="user" class="chatInfo">
         <div class="userTitle">
-            <n-avatar round :size="48" :src="user.image" />
+            <n-avatar round :size="48" :src="image" />
             <n-space class="userChatName">
                 <n-button quaternary>
-                    {{ user.name }}
+                    {{ props.user.userName }}
                 </n-button>
             </n-space>
         </div>
         <div class="userContent">
-            {{ user.content }}
+            {{ props.user.content }}
         </div>
         <div class="userChatWithUser">
             <n-input v-model:value="userChatMessage" placeholder="评论" class="userChatWithUserInput" :autosize="{
@@ -30,7 +30,7 @@
                             <template #header>
                                 <div class="userChatCardHeader">
 
-                                    <n-avatar round :size="48" :src="users.image" />
+                                    <n-avatar round :size="48" :src="image" />
 
                                     <span class="userChatName">{{ users.name }}</span>
 
@@ -45,50 +45,62 @@
     </div>
 </template>
 
-<script setup lang="ts" name="UserChatInfo">
-import { defineProps } from 'vue';
-import {
-    ChatbubbleEllipsesSharp,
-    PaperPlaneOutline
-} from '@vicons/ionicons5';
-import {user as userChat, type User} from '../../../api/user/userInfoData';
-import {userChatMessage} from '../../../api/user/userChatInfo';
+<script setup lang="ts">
+import { defineProps, ref } from 'vue';
+import { ChatbubbleEllipsesSharp, PaperPlaneOutline } from '@vicons/ionicons5';
+import { userInfo } from '../../../store/user';
 
-// 使用 defineProps 来接收父组件传递的 props
-// 定义 props，允许 user 为 null
 const props = defineProps<{
-  user: {
-    image: string;
-    name: string;
+  user: { 
+    id: number;
+    pid: number;
+    databaseId: number;
     content: string;
-    data?: string;
-  } | null;
+    userName: string;
+    toUserName: string | null;
+    likesCount: number;
+    createTime: string;
+    updateTime: string;
+    replies: Array<any>; // 这里定义为一个数组，表示评论的回复
+  };
+  replies: Array<any>; // 接收评论的回复
 }>();
 
-// 解构 props 方便使用
-const { user } = props;
+// 为方便使用 props，定义本地变量
+// eslint-disable-next-line vue/no-dupe-keys
+const user = userInfo(); // 当前用户
+const userChat = props.replies; // 回复列表
+const userChatMessage = ref(''); // 用于存储用户输入的评论消息
+const parentCommentId = ref(props.user.pid); // 父评论ID，来自传入的 user
+const image = "https://images.app.goo.gl/iqqFALJ8q2SPwKMi6"
 
-function userChatRequest(){
-    if(userChatMessage.value.trim() !== ''){
-        const date = new Date();
-        const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        const newComment = {
-            image: "https://images.app.goo.gl/iqqFALJ8q2SPwKMi6",
-            name: "新用户",
-            content: userChatMessage.value,
-            data: formattedDate,
-        };
+function userChatRequest() {
+  if (userChatMessage.value.trim()) {
+    const newComment = {
+      pid: parentCommentId.value, // 父评论的ID
+      databaseId: props.user.databaseId, // 假设这个是你要提交的数据库ID
+      content: userChatMessage.value, // 评论内容
+      userName: user.username, // 当前用户的用户名
+      toUserName: '', // 回复对象的用户名，一级评论为空
+    };
+    const date = new Date();
+    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-        //将新的评论添加到user中最前面
-        userChat.value.unshift(newComment);
-        //将userChatInfo清空
-        userChatMessage.value = '';
-    }else{
-        console.log('输入信息为空');
-    }
+    // 将新的评论添加到 userChat（假设是将新的评论添加到当前评论列表中）
+    userChat.unshift({
+      ...newComment,
+      data: formattedDate,
+      content: userChatMessage.value
+    });
+
+    // 清空评论框
+    userChatMessage.value = '';
+  } else {
+    console.log('输入信息为空');
+  }
 }
-
 </script>
+
 
 <style>
 .chatInfo{

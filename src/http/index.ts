@@ -50,12 +50,20 @@ service.interceptors.request.use(
 //响应拦截器
 service.interceptors.response.use(
     (res:any) => {
-        console.log(res);
+        console.log(res.data);
         return res.data;
     },
     (error) => {
         const message = "";
         console.error(error);
+        if(error.response && error.response.status === 401){
+            // router.push('/login');
+            // localStorage.removeItem("token");
+            // localStorage.removeItem("user");
+            // setTimeout(() => {
+            //     window.location.reload();
+            // },100);
+        }
         return Promise.reject(message);
     }
 );

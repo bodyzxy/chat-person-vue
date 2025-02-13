@@ -76,6 +76,7 @@ export const streamChatApi = async(input: string, databaseInfo: string) => {
     const onClose = () => {
         //TODO，将问答数据存到数据库中
         // chatMessageStore.storeMessage();
+        console.warn("SSE 连接关闭，尝试重新连接...");
         const aiMessage = {sender: "assistant", content: answer}
 
         // TODO:加到前端数据库以activeKey命名
@@ -89,16 +90,27 @@ export const streamChatApi = async(input: string, databaseInfo: string) => {
     };
 
     const onOpen = async (response: any) => {
+        console.log("🔍 SSE 连接状态:", response.status);
+
         if (response.ok) {
-          return;
-        } else if (
-          response.status >= 400 &&
-          response.status < 500 &&
-          response.status !== 429
-        ) {
-          throw new FatalError();
+            console.log("✅ SSE 连接成功");
+            return;
+        }
+
+        if (response.status === 401) {
+            console.error("❌ 鉴权失败，token 可能无效");
+            alert("登录已过期，请重新登录");
+            // localStorage.removeItem("token"); // 清除 token
+            // window.location.href = "/login"; // 跳转到登录页
+        } else if (response.status === 429) {
+            console.warn("⚠️ 请求过于频繁，稍后再试");
+            throw new RetriableError();
+        } else if (response.status >= 400 && response.status < 500) {
+            console.error("❌ 客户端请求错误:", response.status);
+            throw new FatalError();
         } else {
-          throw new RetriableError();
+            console.error("⚠️ 服务器错误:", response.status);
+            throw new RetriableError();
         }
     };
 
@@ -107,7 +119,7 @@ export const streamChatApi = async(input: string, databaseInfo: string) => {
     // console.log("23128671873681726817638172681763817-=-=-=-==-=-=-=-="+JSON.stringify(responses.data))
     if(token){
         console.log("========"+JSON.stringify(dto))
-        fetchEventSource(BASE_URL + ChatApi.textChat, {
+        fetchEventSource("/api" + ChatApi.StreamChat, {
             method: "POST",
             // openWhenHidden: true, //禁止重复调用
             headers: {

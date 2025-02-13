@@ -6,7 +6,7 @@
         <n-layout-sider bordered show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
           :native-scrollbar="false" :inverted="inverted" :style="{height: siderHeight}">
           <n-menu :inverted="inverted" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions"
-          @click="handleMenuSelect" />
+          @update:value="handleMenuSelect"  />
         </n-layout-sider>
         <!-- TODO:视屏展示 -->
         <n-layout class="windows">
@@ -18,7 +18,10 @@
             <div v-for="(messageInfo, index) in messages" :key="index" class="home-message-container"
               :class="{'home-ai-message': messageInfo.sender === 'assistant'}">
               <!--AI回答时在左边显示-->
-              <n-avatar v-if="messageInfo.sender === 'assistant'" round :size="48" src="" />
+              <n-avatar v-if="messageInfo.sender === 'assistant' && load" round :size="48" src="">
+                <!-- 显示加载动画 -->
+                <n-spin size="large" />
+              </n-avatar>
 
               <!--用户的消息显示在右边-->
               <n-avatar v-else round :size="48" src="" />
@@ -51,10 +54,9 @@
 </template>
 
 <script setup lang="ts" name="Home">
-import { h,  onMounted,  ref, type Component,} from 'vue';
-import { NIcon} from 'naive-ui';
-import type { MenuOption } from 'naive-ui';
-import {messages,inputMessage,sendMessage,isSending
+import { h,  onMounted,  ref, VNode, watch, watchEffect, type Component,} from 'vue';
+import { MenuOption, NIcon} from 'naive-ui';
+import {messages,inputMessage,sendMessage,isSending,load
 } from '../api/user/home';
 import {
   BookOutline as BookIcon,
@@ -70,22 +72,42 @@ const siderHeight = ref('95vh');
 const activeKey = ref<string>(''); // 用于保存当前选中的菜单项 key
 const use_message = useMsgStore();
 const user_info = userInfo();
+const keyValue = ref();//用户存储课程信息
 
 // 监听菜单项的选择，更新 activeKey
 function handleMenuSelect(key: string) {
-  activeKey.value = key.srcElement.innerText; //获取文本
-  console.log("sdasdasdasdas",messages.value)
-  messages.value = [];
-  use_message.messages = [];
-  if(activeKey.value != ''){
-    openDB(activeKey.value, 1, activeKey.value, "id", ['sender', 'content']).then((db) => {
-      //打开数据库成功
-				console.log("准备查询", db);
-        cursorGetData(db, activeKey.value,use_message)
+
+  const selectedItem = findMenuOptionByKey(menuOptions, key);
+  keyValue.value = key;
+  console.log(selectedItem)
+  if(selectedItem !== null){
+    activeKey.value = selectedItem?.label; //获取文本
+    console.log("sdasdasdasdas", messages.value)
+    messages.value = [];
+    use_message.messages = [];
+    if (activeKey.value != '') {
+      openDB(activeKey.value, 1, activeKey.value, "id", ['sender', 'content']).then((db) => {
+        //打开数据库成功
+        console.log("准备查询", db);
+        cursorGetData(db, activeKey.value, use_message)
         messages.value = use_message.getMessages;
-    })
+      })
+    }
+    console.log(activeKey.value)
   }
-  console.log(activeKey.value)
+}
+
+function findMenuOptionByKey(options: MenuOption[], key: string): MenuOption | null {
+  for (const option of options) {
+    if (option.key === key) {
+      return option;
+    }
+    if (option.children) {
+      const found = findMenuOptionByKey(option.children, key);
+      if (found) return found;
+    }
+  }
+  return null;
 }
 
 function renderIcon(icon: Component) {
@@ -98,7 +120,7 @@ const menuOptions: MenuOption[] = [
   {
     label: '且听风吟',
     key: 'hear-the-wind-sing',
-    icon: renderIcon(BookIcon)
+    icon: renderIcon(BookIcon),
   },
   {
     label: '1973年的弹珠玩具',
@@ -114,21 +136,21 @@ const menuOptions: MenuOption[] = [
   },
   {
     label: '寻羊冒险记',
-    // key: 'a-wild-sheep-chase',
+    key: 'a-wild-sheep-chase',
     // disabled: true,
-    icon: renderIcon(BookIcon)
+    icon: renderIcon(BookIcon),
   },
   {
     label: '寻羊冒险记',
     key: 'a-wild-sheep-chase',
     // disabled: true,
-    icon: renderIcon(BookIcon)
+    icon: renderIcon(BookIcon),
   },
   {
     label: '寻羊冒险记',
     key: 'a-wild-sheep-chase',
     // disabled: true,
-    icon: renderIcon(BookIcon)
+    icon: renderIcon(BookIcon),
   },
   {
     label: '舞，舞，舞',
@@ -169,7 +191,19 @@ const menuOptions: MenuOption[] = [
 ]
 
 onMounted(() => {
+  deleteData("且听风吟 1973年的弹珠玩具 寻羊冒险记 寻羊冒险记 寻羊冒险记 舞，舞，舞")
 })
+
+watch(() => isSending.value, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    console.log("isSending changed from", oldVal, "to", newVal);
+    if(newVal){
+      handleMenuSelect(keyValue.value)
+    } else {
+      handleMenuSelect(keyValue.value)
+    }
+  }
+}, { immediate: true }); // 设置 immediate 为 true 以便在初始化时就触发一次
 
 </script>
 

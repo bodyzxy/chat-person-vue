@@ -43,7 +43,7 @@ export default defineConfig({
       "/api": {
         changeOrigin: true,
         target: "http://localhost:8080",
-        rewrite: (path) => path.replace(/^\/api/,""), //发送请求是去掉/api
+        // rewrite: (path) => path.replace(/^\/api/,""), //发送请求是去掉/api
       }
     }
   }

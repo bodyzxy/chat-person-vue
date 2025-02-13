@@ -79,7 +79,7 @@
 
 <script setup lang="ts" name="Login">
 import { GlassesOutline, Glasses } from '@vicons/ionicons5'
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import {userLogin} from '../../src/api/user/login';
 import type { LoginUser } from '../../src/common/user/loginUser';
 import {userRegister} from '../api/user/register';
@@ -99,7 +99,10 @@ const registerUser = ref<register>({
     confirmPassword: "", // 字符串类型，最小长度 6，最大长度 40
     role: [],    // 可选的字符串集合类型
 })
-
+onMounted(() => {
+    //提前获取相关热门数据
+    
+})
 </script>
 
 <style>

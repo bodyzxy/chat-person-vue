@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 // 定义与 Java UserInfo 类匹配的接口
-interface UserInfo {
+export interface UserInfo {
     id: number;
     username: string;
     password: string;
@@ -9,6 +9,7 @@ interface UserInfo {
     phone: string;
     email: string;
     rpassword: string;
+    introduction: string;
 }
 
 export const useUserInfoStore = defineStore('userInfo', {
@@ -20,6 +21,7 @@ export const useUserInfoStore = defineStore('userInfo', {
         phone: '1232312312312',
         email: '29331777@qq.com',
         rpassword: '1232312312312',
+        introduction: '1232312312312',
     }),
 
     actions: {

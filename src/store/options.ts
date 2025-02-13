@@ -5,7 +5,7 @@ export const CHAT_OPTIONS = "chat-person"
 export const defaultChatOptions: ChatOptions = {
     model: "gpt-3.5-turbo",
     maxHistoryLength: 10,
-    chatType: "simple",
+    chatType: "rag",
     temperature: 0.5,
 };
 
