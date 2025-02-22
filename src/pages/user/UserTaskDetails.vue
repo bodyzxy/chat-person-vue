@@ -1,7 +1,7 @@
 <template>
     <div class="taskDatabase">
-        <div class="taskLift">
-            <TaskDetailsLift :databaseId="databaseId" />
+        <div class="taskLift" v-if="databaseId !== 0">
+            <TaskDetailsLift :databaseId="databaseIdString" />
         </div>
         <div class="taskMessage">
             <n-split direction="horizontal" style="height: 100%;" default-size="200px">
@@ -18,9 +18,9 @@
                 <template #2>
                     <div class="pane">
                         <div v-for="(message, index) in messages" :key="index" class="message-container"
-                            :class="{'ai-message': message.sender === 'AI'}">
+                            :class="{'ai-message': message.sender === 'assistant'}">
                             <!--AI回答时在左边显示-->
-                            <n-avatar v-if="message.sender === 'AI'" round :size="48" src="" />
+                            <n-avatar v-if="message.sender === 'assistant'" round :size="48" src="" />
 
                             <!--用户的消息显示在右边-->
                             <n-avatar v-else round :size="48" src=""/>
@@ -35,7 +35,7 @@
             </n-split>
         </div>
         <!--TODO:另一个页面实现-->
-        <div class="taskRight">
+        <div class="taskRight" v-if="databaseId !== 0">
             <n-float-button :right="20" :top="70">
                 <RouterLink
                 :to="{ name: 'autherInfo', params: { id: userId } }"
@@ -51,7 +51,7 @@
             maxRows: 3
         }" type="textarea">
             <template #suffix>
-                <span class="task-icon-wrapper" @click="request(user_message, user_info)" :disabled="isSending">
+                <span class="task-icon-wrapper" @click="requestChat(user_message, user_info)" :disabled="isSending">
                     <n-icon :component="PaperPlaneOutline" size="30px" />
                 </span>
             </template>
@@ -64,10 +64,11 @@ import {
     PaperPlaneOutline,
 } from '@vicons/ionicons5';
 import TaskDetailsLift from './element/TaskDetailsLift.vue';
-import { onMounted, watch } from 'vue';
+import { nextTick, onMounted, ref, watch, watchEffect } from 'vue';
 import { useRoute } from 'vue-router';
-import {databaseId,tags,removeTag,messages,inputMessage,
-    request,isSending
+import {databaseId,tags,removeTag,messages,inputMessage,databaseIdString,
+    isSending,
+    requestChat,requestTag
 } from '../../api/user/taskDetails';
 import {useMsgStore} from '../../store/msg';
 import {userInfo} from '../../store/user';
@@ -79,7 +80,39 @@ const user_info = userInfo()
 
 //TODO:需要后端传送
 const userId = "bodyzxy";
+const hasSent = ref(false);
 
+// watchEffect(() => {
+//   if (isSending.value) {
+//     hasSent.value = true; // 标记已经触发
+//   }
+
+//   nextTick(() => {
+//     if (hasSent.value && !isSending.value) {
+//       console.log("isSending 完整切换: false → true → false");
+//       hasSent.value = false; // 重置
+//       window.location.reload();
+//     }
+//   });
+// });
+
+function updateChat(){
+    if(databaseIdString.value != ""){
+        openDB(databaseIdString.value, 1, databaseIdString.value, "id", ['sender', 'content']).then((db) => {
+            //打开数据库成功
+            console.log("查询成功",db)
+            cursorGetData(db, databaseIdString.value, user_message)
+            messages.value = user_message.getMessages;
+        })
+    }else{
+        openDB(String(databaseId.value), 1, String(databaseId.value), "id", ['sender', 'content']).then((db) => {
+            //打开数据库成功
+            console.log("查询成功",db)
+            cursorGetData(db, String(databaseId.value), user_message)
+            messages.value = user_message.getMessages;
+        })
+    }
+}
 
 onMounted(() => {
     user_message.messages = []
@@ -87,20 +120,22 @@ onMounted(() => {
     const route = useRoute(); // 确保 useRoute 在 mounted 生命周期中调用
   
     // 获取并设置初始的 route params
-    databaseId.value = route.params.id as string;
+    // databaseIdString.value = route.params.id as string;
+    const idStr = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id;
 
-    if(databaseId.value != ""){
-        openDB(databaseId.value, 1, databaseId.value, "id", ['sender', 'content']).then((db) => {
-            //打开数据库成功
-            console.log("查询成功",db)
-            cursorGetData(db, databaseId.value, user_message)
-            messages.value = user_message.getMessages;
-        })
+    if (!Number.isNaN(parseInt(idStr, 10)) && idStr === parseInt(idStr, 10).toString()) {
+        // 确保整个字符串是数字
+        databaseId.value = parseInt(idStr, 10);
+    } else {
+        databaseIdString.value = route.params.id as string;
     }
+    updateChat()
+    requestTag()
+    
   
     // 监听路由变化
     watch(() => route.params.id, (newId) => {
-      databaseId.value = newId as string;
+      databaseIdString.value = newId as string;
     });
   });
 

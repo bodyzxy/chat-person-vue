@@ -1,15 +1,15 @@
 import { ref } from "vue";
 import {request} from '../../http/index';
-import type { PdfRequest } from "@/common/user/userUpdateFiles";
+import { streamChatApi } from "../chatApi";
 
 
-export const tags = ref(['mysql八股文', 'mysql八股文', 'mys']);
+export const tags = ref([]);
 // 存储对话消息
 export const messages = ref<{ sender: string; content: string }[]>([]);
 // 输入框的内容
 export const inputMessage = ref('');
 export const isSending = ref(false)
-
+export const databaseId = ref();
 
 // 引用文件输入框
 export const fileInput = ref(null);
@@ -20,11 +20,19 @@ export const handleFileChange = async (event: Event) => {
     if(file){
         const formData = new FormData();
         formData.append("file",file);
+        formData.append("databaseId",String(databaseId.value));
         
         try{
+            if (isNaN(Number(databaseId.value))) {
+                console.error("无效的 databaseId:", databaseId.value);
+                return;
+            }
             const response = await request.post("/file/update", formData);
 
             if (response.code === 0) {
+                setTimeout(() => {
+                    window.location.reload(); // 让页面强制刷新
+                }, 200);
                 console.log("文件上传成功:", response.data);
             } else {
                 console.log("文件上传失败:", response.msg);
@@ -49,11 +57,12 @@ export async function submit(){
         isSending.value = true;
         //TODO: 记得去获取ID
         // 1. 将用户输入的内容添加到 Pane 2 显示
-        messages.value.push({sender: "databaseId.value",content: inputMessage.value})
+        // messages.value.push({sender: "databaseId.value",content: inputMessage.value})
 
         try{
-            const response = await fetchResponseFromAPI(inputMessage.value);
-            messages.value.push({sender: 'AI', content: response});
+            //TODO:请求rag接口
+            streamChatApi(inputMessage.value, String(databaseId.value));
+            
         } catch(error){
             console.error('Error fetching response:', error);
         }
@@ -75,4 +84,14 @@ async function fetchResponseFromAPI(message: string): Promise<string> {
 
 export function removeTag(index: number){
     tags.value.splice(index, 1);
+}
+
+export async function requestTag(){
+      try{
+        const response = await request.get(`/file/contents/${databaseId.value}`)
+        tags.value = response.data;
+      }catch(error){
+        console.log("获取标签时出错：",error);
+      }
+      
 }

@@ -78,7 +78,7 @@ onMounted(() => {
     margin-left: 90%;
 }
 .plazaMiddle{
-    max-height: 770px;
+    max-height: 600px;
     overflow-y: auto; /*启用了垂直滚动条 */
     padding-right: 4px; /*为滚动条预留了空间，避免内容被遮挡*/
     flex: 1;
@@ -91,6 +91,6 @@ onMounted(() => {
 .pagination-container {
   display: flex;
   justify-content: center;
-  padding: 100px 0; /* 确保分页与列表的间距 */
+  padding: 20px 0; /* 确保分页与列表的间距 */
 }
 </style>

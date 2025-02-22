@@ -61,10 +61,12 @@ export async function createDatabase(name: string){
         const response = await request.get(`/database/create/${user.id}/${name}`)
         if (response) {
             console.log("创建数据库成功:", response);
-            router.push('/userDatabase');
+            router.push({
+                path: `/userDatabase/${response}`
+            });
             setTimeout(() => {
                 window.location.reload(); // 让页面强制刷新
-            }, 100);
+            }, 200);
         }
     }catch(error){
         console.error("上传文件时发生错误:", error);

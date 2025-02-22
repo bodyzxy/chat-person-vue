@@ -17,3 +17,10 @@ export interface ChatDTO {
     chatOptions: ChatOptions;
     prompt: string;
   }
+
+export interface ChatDTORag {
+  messages: Message[];
+  chatOptions: ChatOptions;
+  prompt: string;
+  databaseId: string;
+}

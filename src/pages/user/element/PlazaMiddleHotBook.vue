@@ -31,7 +31,7 @@ onMounted(() => {
 
                             <!-- 右侧预览框 -->
                             <div class="list-item-right-book">
-                                <iframe :src="task.url" frameborder="0" class="preview-frame-book"></iframe>
+                                <!-- <iframe :src="task.url" frameborder="0" class="preview-frame-book"></iframe> -->
                             </div>
                         </n-list-item>
                     </div>
@@ -50,14 +50,14 @@ onMounted(() => {
     height: 100%;
 }
 .plazaMiddleHotBook{
-    max-height: 770px;
+    max-height: 600px;
     overflow-y: auto; /*启用了垂直滚动条 */
     padding-right: 4px; /*为滚动条预留了空间，避免内容被遮挡*/
     flex: 1;
 }
 .list-book-palaza{
     height: 20vh; /* 使每个列表项的高度是浏览器视口高度的20% */
-    background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+    background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
     width: 100%; /* 宽度占满容器 */
 }
 .list-item-left-book {

@@ -9,9 +9,9 @@
         <n-button strong secondary round class="plaza">
           <RouterLink to="/userPlaza" style="color: black;">广场</RouterLink>
         </n-button>
-        <n-button strong secondary round class="plaza">
+        <!-- <n-button strong secondary round class="plaza">
           <RouterLink to="/practice" style="color: black;">练习</RouterLink>
-        </n-button>
+        </n-button> -->
         <n-button strong secondary round class="userInfo">
           <!-- TODO 这里要进行ROLE的判断然后来去定显示什么 -->
           <RouterLink to="/userInfo" style="color: black;">个人中心</RouterLink>

@@ -3,9 +3,6 @@ import type {LoginUser} from '@/common/user/loginUser';
 import router from "@/router/router";
 import {username} from '../../common/global/userInfo';
 import { userInfo } from '@/store/user';
-import { loadHotTitle } from './plazaMiddleHotTitle';
-import { loadHotGithub } from './plazaMiddleHotGithub';
-import { loadHotBook } from './plazaMiddleHotBook';
 
 interface User{
     username: string;
@@ -31,9 +28,7 @@ export const userLogin = async (param:LoginUser) => {
         localStorage.setItem('user', JSON.stringify(user));
         //登录成功继续导航
         router.push('/home');
-        // loadHotTitle();
-        // loadHotGithub();
-        // loadHotBook();
+        
     } catch (error) {
         console.error('Error logging in:',error);
         throw error;

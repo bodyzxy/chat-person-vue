@@ -32,13 +32,9 @@ onMounted(() => {
 
                             <!-- 右侧预览框 -->
                             <div class="list-item-right">
-                                <iframe :src="task.url" frameborder="0" class="preview-frame"></iframe>
+                                <!-- <iframe :src="task.url" frameborder="0" class="preview-frame"></iframe> -->
                             </div>
                         </n-list-item>
-                    </div>
-                    <!-- 加载效果 -->
-                    <div v-if="load" class="loading-container">
-                        <n-spin size="large" />
                     </div>
                     <div class="pagination-container" v-if="hotDataList.length">
                         <n-pagination v-model:page="page" :page-count="totalPages" simple />
@@ -52,10 +48,10 @@ onMounted(() => {
 <style>
 .hotGithubList{
     border-radius: 10px;
-    height: 100%;
+    height: 80%;
 }
 .plazaMiddleHotGithub{
-    max-height: 770px;
+    max-height: 600px;
     overflow-y: auto; /*启用了垂直滚动条 */
     padding-right: 4px; /*为滚动条预留了空间，避免内容被遮挡*/
     flex: 1;

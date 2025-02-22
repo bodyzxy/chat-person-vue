@@ -15,11 +15,8 @@
                     <n-float-button style="width: 100%;" @click="changePlazaContent('PlazaMiddleHotTitle')">
                         热门博客地址
                     </n-float-button>
-                    <n-float-button style="width: 100%;">
-                        
-                    </n-float-button>
                 </n-float-button-group>
-                <n-card content-style="padding: 0;" style="border-radius: 20px; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5)">
+                <n-card content-style="padding: 0;" style="border-radius: 20px; box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5) ; margin-top: -10px;">
                     <n-tabs
                     type="line"
                     size="large"
@@ -75,6 +72,9 @@ import PlazaMiddleHotGithub from './element/PlazaMiddleHotGithub.vue' // Adjust 
 import PlazaMiddleHotBook from './element/PlazaMiddleHotBook.vue'
 import PlazaMiddleHotTitle from './element/PlazaMiddleHotTitle.vue'
 import { DefineComponent, onMounted, ref } from 'vue';
+import { hotDataListTitle, loadHotTitle } from '../../api/user/plazaMiddleHotTitle';
+import { hotDataList, loadHotGithub } from '../../api/user/plazaMiddleHotGithub';
+import { hotDataListBook, loadHotBook } from '../../api/user/plazaMiddleHotBook';
 
 const authors = [
   { name: 'bodyzxy', description: 'Description of Author 1' },
@@ -104,7 +104,26 @@ const changePlazaContent = (content: string) => {
   console.log(selectedPlaza.value);
 };
 onMounted(async () => {
-    // getHotDatabase()
+    // 只在第一次访问时执行
+    // sessionStorage.removeItem("loaded");
+  if (!sessionStorage.getItem("loaded")) {
+    sessionStorage.setItem("loaded", "true");
+
+    await loadHotTitle();
+    await loadHotGithub();
+    await loadHotBook();
+
+    // 存储数据到 sessionStorage，防止页面刷新丢失
+    sessionStorage.setItem("hotTitle", JSON.stringify(hotDataListTitle.value));
+    sessionStorage.setItem("hotGithub", JSON.stringify(hotDataList.value));
+    sessionStorage.setItem("hotBook", JSON.stringify(hotDataListBook.value));
+
+    } else{
+        // 页面刷新时从 sessionStorage 读取数据
+        hotDataListTitle.value = JSON.parse(sessionStorage.getItem("hotTitle") || "[]");
+        hotDataList.value = JSON.parse(sessionStorage.getItem("hotGithub") || "[]");
+        hotDataListBook.value = JSON.parse(sessionStorage.getItem("hotBook") || "[]");
+    }
 })
 </script>
 
@@ -129,6 +148,7 @@ onMounted(async () => {
 }
 .leftIcon{
     /* background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%) */
+    /* margin-top: 100px; */
 }
 
 .leftIcon{

@@ -57,12 +57,12 @@ service.interceptors.response.use(
         const message = "";
         console.error(error);
         if(error.response && error.response.status === 401){
-            // router.push('/login');
-            // localStorage.removeItem("token");
-            // localStorage.removeItem("user");
-            // setTimeout(() => {
-            //     window.location.reload();
-            // },100);
+            router.push('/login');
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            setTimeout(() => {
+                window.location.reload();
+            },100);
         }
         return Promise.reject(message);
     }

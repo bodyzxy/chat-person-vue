@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 
 export const CHAT_OPTIONS = "chat-person"
 export const defaultChatOptions: ChatOptions = {
-    model: "gpt-3.5-turbo",
+    model: "gpt-4o-mini",
     maxHistoryLength: 10,
     chatType: "rag",
     temperature: 0.5,
